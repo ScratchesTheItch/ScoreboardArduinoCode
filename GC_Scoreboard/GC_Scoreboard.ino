@@ -603,26 +603,11 @@ void single_cheer(){
    delay(1000);
    
    matrix.clearScreen();
-   print_ELITE(4);
+   matrix.setCursor(24,4);
+   matrix.print("TEAM");
    score(VScore, HScore);
    inning(Half, Inning);
    matrix.writeScreen();
-
-}
-
-//print the team name (Needed to get 5th letter on the line)
-void print_ELITE(uint8_t line_offset){
-
-  matrix.setCursor(24, line_offset);  
-   matrix.print("E");
-   matrix.setCursor(29, line_offset);  
-   matrix.print("L");
-   matrix.setCursor(32, line_offset);   
-   matrix.print("I");
-   matrix.setCursor(37, line_offset);   
-   matrix.print("T");
-   matrix.setCursor(43, line_offset);   
-   matrix.print("E");
 
 }
 
