@@ -51,11 +51,11 @@ void usage(){
     //  expanded help comments but left them in here for the benefit of 
     //  potential future users.
     
-    Serial.println("Valid options for this program are:");
-    Serial.println("  SGS VISITOR SCORE, HOME SCORE, TOP/BOTTOM, INNING,");
-    Serial.println("    FIRST, SECOND, THIRD,BALLS, STRIKES, OUTS");
-//    Serial.println("    where:");
-//    Serial.println("        FIRST   - Runner on (1) or not on (0) first base"); 
+    Serial.print("Valid options for this program are:\n");
+    Serial.print("    SGS VISITOR SCORE, HOME SCORE, TOP/BOTTOM, INNING,\n");
+    Serial.print("        FIRST, SECOND, THIRD,BALLS, STRIKES, OUTS\n");
+    Serial.print("    where:\n");
+//    Serial.print("        FIRST   - Runner on (1) or not on (0) first base\n"); 
 //    Serial.println("        SECOND  - Runner on (1) or not on (0) second base"); 
 //    Serial.println("        THIRD   - Runner on (1) or not on (0) third base"); 
 //    Serial.println("        BALLS   - Number of balls (0-3)"); 
@@ -83,22 +83,19 @@ void usage(){
 //    Serial.println("        INT - Series of chars (0-255), encoding the ");
 //    Serial.println("              logo, each INT representing a column of");
 //    Serial.println("              logo, from left to right, LSB on top");
-Serial.println("  printScoreUpdate");
-//    Serial.println("  print the Score Update Screen prior to scores:)
-Serial.println("  MLBRecap VIS, VSCORE, HOME, HSCORE, INNING, T|B");
+    Serial.println("  printScoreUpdate MLB/NFL");
+//    Serial.println("  print the MLB/NFL Score Update Screen prior to scores:)
+    Serial.println("  GameRecap VIS, VSCORE, HOME, HSCORE, INNING, T|B");
 //    Serial.println("    Print recap of baseball game score to the center screen");
 //    Serial.println("    where:");
 //    Serial.println("        VIS - Three letter visiting team abbreviation");
 //    Serial.println("        VSCORE - Visitor score");
 //    Serial.println("        HOM - Three letter home team abbreviation");
 //    Serial.println("        HSCORE - Home score");
-//    Serial.println("        INNING - Inning number");
+//    Serial.println("        INNING - Inning number or F for final");
 //    Serial.println("        T|B - Specifies top(T) or bottom (B) of inning");
 Serial.println("  help - This message");
 }    
-
-
-
 
 /////////////////////////////////////////////////////////
 //
@@ -114,6 +111,7 @@ void setup() {
   matrix.fillScreen();
   while (! Serial);
   Serial.println("Initialization complete");
+  //test();
   delay(500);
   //draw initial game graphics
   drawGameState(BaseOne,BaseTwo,BaseThree,Balls,Strikes,Outs,VScore, HScore, Half, Inning);
@@ -167,8 +165,8 @@ void loop(){
          else if (command == "printScoreUpdate"){
            printScoreScreen();
          }
-         else if (command == "MLBRecap"){
-           MLBRecap();
+         else if (command == "GameRecap"){
+           GameRecap();
          }
 
          //Once done, this line must be output so that interfacing programs know the line is clear
@@ -663,9 +661,28 @@ void print_message(){
 
 
 void printScoreScreen(){
-    matrix.clearScreen();
 
-    writeSkinnyString(24,0,"MLB",1,1);
+    matrix.clearScreen();
+ 
+    command="";
+
+    inByte = Serial.read();
+    if (inByte >= 65 && inByte <= 90) {
+        command.concat(inByte);
+    }
+    
+    inByte = Serial.read();
+    if (inByte >= 65 && inByte <= 90) {
+        command.concat(inByte);
+    }
+    
+    inByte = Serial.read();
+    if (inByte >= 65 && inByte <= 90) {
+        command.concat(inByte);
+    }
+    
+    
+    writeSkinnyString(24,0,command,1,1);
     writeSkinnyString(36,0,"GAME",1,1);
     writeSkinnyString(27,8,"SCORES",1,1);
    
@@ -677,7 +694,8 @@ void printScoreScreen(){
   
 }
 
-void MLBRecap(){
+
+void GameRecap(){
   
     matrix.clearScreen();
     
@@ -736,6 +754,9 @@ void MLBRecap(){
       if (inByte >= 48 && inByte <= 57) {
         command.concat(inByte);
       }
+      else if (inByte == 70 || inByte == 72) {
+        command.concat(inByte);
+      }
     }
 
     writeSkinnyString(48-3*command.length(),4,command,1,1);
@@ -761,6 +782,5 @@ void MLBRecap(){
 
   
 }
-
 
 
